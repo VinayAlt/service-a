@@ -49,7 +49,7 @@ pipeline {
 
                 # Apply deployment and service
                 kubectl apply -f k8s/deploy.yaml -n default
-                kubectl apply -f k8s/service.yaml -n default
+                kubectl apply -f k8s/svc.yaml -n default
                 kubectl apply -f k8s/ingress.yaml -n default
 
                 # Wait until rollout is complete
