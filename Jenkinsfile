@@ -43,8 +43,9 @@ pipeline {
                 sed -i "s/service-a:latest/service-a:${IMAGE_TAG}/g" k8s/deploy.yaml
 
                 # Apply deployment and service
-                kubectl apply -f k8s/deployment.yaml -n default
+                kubectl apply -f k8s/deploy.yaml -n default
                 kubectl apply -f k8s/service.yaml -n default
+                kubectl apply -f k8s/ingress.yaml -n default
 
                 # Wait until rollout is complete
                 kubectl rollout status deployment/service-a -n default
