@@ -1,5 +1,5 @@
 pipeline {
-    agent { label 'built-in' }
+    agent none
 
     environment {
         AWS_REGION = "us-west-2"
@@ -10,24 +10,28 @@ pipeline {
 
     stages {
         stage('Checkout') {
+            agent { label 'node1' }
             steps {
                 git branch: 'main', url: 'https://github.com/VinayAlt/service-a.git'
             }
         }
 
         stage('Build Docker Image') {
+            agent { label 'node1' }
             steps {
                 sh 'docker build -t $ECR_REPO:$IMAGE_TAG .'
             }
         }
 
         stage('Tag Image') {
+            agent { label 'node1' }
             steps {
                 sh 'docker tag $ECR_REPO:$IMAGE_TAG $ACCOUNT_ID.dkr.ecr.$AWS_REGION.amazonaws.com/$ECR_REPO:$IMAGE_TAG'
             }
         }
 
         stage('Push to ECR') {
+            agent { label 'node1' }
             steps {
                 withAWS(credentials: 'aws-creds', region: "${AWS_REGION}") {
                     sh 'aws ecr get-login-password --region $AWS_REGION | docker login --username AWS --password-stdin $ACCOUNT_ID.dkr.ecr.$AWS_REGION.amazonaws.com'
@@ -37,6 +41,7 @@ pipeline {
         }
 
         stage('Deploy to Kubernetes') {
+            agent { label 'built-in' }
             steps {
                 sh '''
                 # Update deployment file with new image tag
