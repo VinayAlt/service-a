@@ -4,14 +4,14 @@ pipeline {
     environment {
         AWS_REGION = "us-west-2"
         ACCOUNT_ID = "784074784226"
-        ECR_REPO = "user-service"   // change for each service
+        ECR_REPO = "service-a"   // change for each service
         IMAGE_TAG = "${BUILD_NUMBER}"
     }
 
     stages {
         stage('Checkout') {
             steps {
-                git branch: 'main', url: 'https://github.com/your-org/user-service.git'
+                git branch: 'main', url: 'https://github.com/VinayAlt/service-a.git'
             }
         }
 
@@ -36,7 +36,17 @@ pipeline {
 
         stage('Deploy to Kubernetes') {
             steps {
-                sh 'kubectl set image deployment/$ECR_REPO $ECR_REPO=$ACCOUNT_ID.dkr.ecr.$AWS_REGION.amazonaws.com/$ECR_REPO:$IMAGE_TAG -n default'
+                sh '''
+                # Update deployment file with new image tag
+                sed -i "s/service-a:latest/service-a:${IMAGE_TAG}/g" k8s/deployment.yaml
+
+                # Apply deployment and service
+                kubectl apply -f k8s/deployment.yaml -n default
+                kubectl apply -f k8s/service.yaml -n default
+
+                # Wait until rollout is complete
+                kubectl rollout status deployment/service-a -n default
+            '''
             }
         }
     }
