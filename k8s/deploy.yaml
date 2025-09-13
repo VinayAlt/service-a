@@ -3,7 +3,7 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: opentelemetry-demo-frontendproxy
+  name: opentelemetry-demo-frontendproxy-myapp
   labels:
     
     opentelemetry.io/name: opentelemetry-demo-frontendproxy
@@ -31,7 +31,7 @@ spec:
       serviceAccountName: opentelemetry-demo
       containers:
         - name: frontendproxy
-          image: 'ghcr.io/open-telemetry/demo:1.12.0-frontendproxy'
+          image: '784074784226.dkr.ecr.us-west-2.amazonaws.com/service-a:latest'
           imagePullPolicy: IfNotPresent
           ports:
             

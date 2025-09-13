@@ -29,8 +29,10 @@ pipeline {
 
         stage('Push to ECR') {
             steps {
-                sh 'aws ecr get-login-password --region $AWS_REGION | docker login --username AWS --password-stdin $ACCOUNT_ID.dkr.ecr.$AWS_REGION.amazonaws.com'
-                sh 'docker push $ACCOUNT_ID.dkr.ecr.$AWS_REGION.amazonaws.com/$ECR_REPO:$IMAGE_TAG'
+                withAWS(credentials: 'aws-cred-id', region: "${AWS_REGION}") {
+                    sh 'aws ecr get-login-password --region $AWS_REGION | docker login --username AWS --password-stdin $ACCOUNT_ID.dkr.ecr.$AWS_REGION.amazonaws.com'
+                    sh 'docker push $ACCOUNT_ID.dkr.ecr.$AWS_REGION.amazonaws.com/$ECR_REPO:$IMAGE_TAG'
+                }
             }
         }
 
@@ -38,7 +40,7 @@ pipeline {
             steps {
                 sh '''
                 # Update deployment file with new image tag
-                sed -i "s/service-a:latest/service-a:${IMAGE_TAG}/g" k8s/deployment.yaml
+                sed -i "s/service-a:latest/service-a:${IMAGE_TAG}/g" k8s/deploy.yaml
 
                 # Apply deployment and service
                 kubectl apply -f k8s/deployment.yaml -n default
