@@ -1,5 +1,5 @@
 pipeline {
-    agent { label 'master' }
+    agent { label 'built-in' }
 
     environment {
         AWS_REGION = "us-west-2"
