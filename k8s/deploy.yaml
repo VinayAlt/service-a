@@ -85,6 +85,14 @@ spec:
               value: "4318"
             - name: OTEL_RESOURCE_ATTRIBUTES
               value: service.name=$(OTEL_SERVICE_NAME),service.namespace=opentelemetry-demo,service.version=1.12.0
+            - name: GRAFANA_HOST
+              value: "opentelemetry-demo-grafana"
+            - name: GRAFANA_PORT
+              value: "80"
+            - name: JAEGER_HOST
+              value: "opentelemetry-demo-jaeger-query"
+            - name: JAEGER_PORT
+              value: "16686"
           resources:
             limits:
               memory: 50Mi
