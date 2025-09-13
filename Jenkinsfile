@@ -53,7 +53,7 @@ pipeline {
                 kubectl apply -f k8s/ingress.yaml -n default
 
                 # Wait until rollout is complete
-                kubectl rollout status deployment/opentelemetry-demo-frontendproxy-myapp -n default
+                #kubectl rollout status deployment/opentelemetry-demo-frontendproxy-myapp -n default
             '''
             }
         }
